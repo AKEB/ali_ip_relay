@@ -72,16 +72,21 @@ class ali_ip_relay(SwitchEntity):
         self._sn = sn
         self._num = num
         self._id = sn + '_' + str(num)
+        self._unique_id = self._id
         self._name = 'ali_ip_relay_' + sn + '_' + str(num)
         self._state = True if state == '1' else False
         # hass.states.set(DOMAIN + '.' + self._id + '.test', self._sn)
 
-    @ property
+    @property
     def name(self) -> str:
         """Return the display name of this light."""
         return self._name
 
-    @ property
+    @property
+    def unique_id(self) -> str:
+        return self._unique_id
+
+    @property
     def is_on(self) -> bool | None:
         """Return true if light is on."""
         return self._state
