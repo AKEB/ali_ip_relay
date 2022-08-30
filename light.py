@@ -1,4 +1,4 @@
-"""Platform for switch integration."""
+"""Platform for light integration."""
 from __future__ import annotations
 
 import logging
@@ -8,7 +8,7 @@ import voluptuous as vol
 
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.switch import (PLATFORM_SCHEMA, SwitchEntity)
+from homeassistant.components.light import (PLATFORM_SCHEMA, LightEntity)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -63,7 +63,7 @@ def setup_platform(
                  data['output'][i]) for i in range(0, len(data['output'])))
 
 
-class ali_ip_relay(SwitchEntity):
+class ali_ip_relay(LightEntity):
 
     def __init__(self, ip, port, sn, num, state) -> None:
         """Initialize an AwesomeLight."""
@@ -102,13 +102,30 @@ class ali_ip_relay(SwitchEntity):
         """Instruct the light to turn off."""
         pass
 
-    def toggle(self, **kwargs):
-        """Toggle the entity."""
-        pass
-
     def update(self) -> None:
         """Fetch new state data for this light.
         This is the only method that should fetch new data for Home Assistant.
         """
-
-        pass
+        sock = socket.socket()
+        sock.connect((str(self._ip), self._port))
+        sock.send('state=?'.encode())
+        data = sock.recv(1024)
+        sock.close()
+        if not data:
+            _LOGGER.error("Could not connect to ali_ip_relay hub")
+            return
+        data = data.decode()
+        if not data:
+            _LOGGER.error("Could not connect to ali_ip_relay hub")
+            return
+        data = json.loads(data)
+        if not data:
+            _LOGGER.error("Could not connect to ali_ip_relay hub")
+            return
+        if data['cmd'] != 'state':
+            _LOGGER.error("Could not connect to ali_ip_relay hub")
+            return
+        if self._num < 1 or self._num > len(data['output']):
+            _LOGGER.error("Could not connect to ali_ip_relay hub")
+            return
+        self._state = data['output'][self._num - 1]
