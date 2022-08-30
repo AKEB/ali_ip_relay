@@ -76,6 +76,8 @@ class ali_ip_relay(LightEntity):
         self._unique_id = self._id
         self._name = 'ali_ip_relay_' + sn + '_' + str(num)
         self._state = True if state == '1' else False
+        self._attr_device_info = sn
+        self._attr_unique_id = self._unique_id
         # hass.states.set(DOMAIN + '.' + self._id + '.test', self._sn)
 
     @property
