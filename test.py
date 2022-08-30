@@ -22,3 +22,13 @@ for i in range(0, len(data['output'])):
     print('switch ' + str(i + 1) + ' ' + data['output'][i])
 
 print(data['output'])
+
+
+switch = 'xxxxxxxx'
+
+num = 7
+
+switch = ['x' for i in range(0, 8)]
+switch[num - 1] = '1'
+
+print(''.join(switch))

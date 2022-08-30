@@ -60,17 +60,18 @@ def setup_platform(
     runtime = data['runtime']
     # Add devices
     add_entities(ali_ip_relay(ip, port, sn, i + 1,
-                 data['output'][i]) for i in range(0, len(data['output'])))
+                 data['output'][i], len(data['output'])) for i in range(0, len(data['output'])))
 
 
 class ali_ip_relay(LightEntity):
 
-    def __init__(self, ip, port, sn, num, state) -> None:
+    def __init__(self, ip, port, sn, num, state, max_count) -> None:
         """Initialize an AwesomeLight."""
         self._ip = ip
         self._port = port
         self._sn = sn
         self._num = num
+        self._max_count = max_count
         self._id = sn + '_' + str(num)
         self._unique_id = self._id
         self._name = 'ali_ip_relay_' + sn + '_' + str(num)
@@ -92,15 +93,26 @@ class ali_ip_relay(LightEntity):
         return self._state
 
     def turn_on(self, **kwargs: Any) -> None:
-        """Instruct the light to turn on.
-        You can skip the brightness part if your light does not support
-        brightness control.
-        """
-        pass
+        if self._num < 1 or self._num > self._max_count:
+            _LOGGER.error("Could not connect to ali_ip_relay hub")
+            return
+        switch = ['x' for i in range(0, self._max_count)]
+        switch[self._num - 1] = '1'
+        sock = socket.socket()
+        sock.connect((str(self._ip), self._port))
+        sock.send(('setr=' + ''.join(switch)).encode())
+        sock.close()
 
     def turn_off(self, **kwargs: Any) -> None:
-        """Instruct the light to turn off."""
-        pass
+        if self._num < 1 or self._num > self._max_count:
+            _LOGGER.error("Could not connect to ali_ip_relay hub")
+            return
+        switch = ['x' for i in range(0, self._max_count)]
+        switch[self._num - 1] = '0'
+        sock = socket.socket()
+        sock.connect((str(self._ip), self._port))
+        sock.send(('setr=' + ''.join(switch)).encode())
+        sock.close()
 
     def update(self) -> None:
         """Fetch new state data for this light.
@@ -128,4 +140,4 @@ class ali_ip_relay(LightEntity):
         if self._num < 1 or self._num > len(data['output']):
             _LOGGER.error("Could not connect to ali_ip_relay hub")
             return
-        self._state = data['output'][self._num - 1]
+        self._state = True if data['output'][self._num - 1] == '1' else False
