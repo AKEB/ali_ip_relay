@@ -40,28 +40,28 @@ def setup_platform(
     data = sock.recv(1024)
     sock.close()
     if not data:
-        _LOGGER.error("Could not connect to AliIPRelay hub")
+        _LOGGER.error("Could not connect to ali_ip_relay hub")
         return
     data = data.decode()
     if not data:
-        _LOGGER.error("Could not connect to AliIPRelay hub")
+        _LOGGER.error("Could not connect to ali_ip_relay hub")
         return
     data = json.loads(data)
     if not data:
-        _LOGGER.error("Could not connect to AliIPRelay hub")
+        _LOGGER.error("Could not connect to ali_ip_relay hub")
         return
     if data['cmd'] != 'state':
-        _LOGGER.error("Could not connect to AliIPRelay hub")
+        _LOGGER.error("Could not connect to ali_ip_relay hub")
         return
 
     sn = data['sn']
     runtime = data['runtime']
     # Add devices
-    add_entities(AliIPRelay(ip, port, sn, i + 1,
+    add_entities(ali_ip_relay(ip, port, sn, i + 1,
                  data['output'][i]) for i in range(0, len(data['output'])))
 
 
-class AliIPRelay(SwitchEntity):
+class ali_ip_relay(SwitchEntity):
 
     def __init__(self, ip, port, sn, num, state) -> None:
         """Initialize an AwesomeLight."""

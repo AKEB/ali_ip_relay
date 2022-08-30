@@ -1,7 +1,7 @@
 {
 	"domain": "ali_ip_relay",
 	"name": "Aliexpress IP Relay",
-	"documentation": "https://github.com/AKEB/AliIPRelay/",
+	"documentation": "https://github.com/AKEB/ali_ip_relay/",
 	"dependencies": [],
 	"codeowners": ["@AKEB"],
 	"requirements": [],

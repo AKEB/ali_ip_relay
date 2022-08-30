@@ -1,4 +1,4 @@
-# AliIPRelay
+# ali_ip_relay
 
 This integration shows how you would go ahead and integrate a physical light into Home Assistant.
 
