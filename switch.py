@@ -8,7 +8,7 @@ import voluptuous as vol
 
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.light import (PLATFORM_SCHEMA, SwitchEntity)
+from homeassistant.components.switch import (PLATFORM_SCHEMA, SwitchEntity)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
