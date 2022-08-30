@@ -13,12 +13,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
+DOMAIN = "ali_ip_relay"
+
 _LOGGER = logging.getLogger(__name__)
 
 # Validation of the user's configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required('ip'): cv.string,
-   	vol.Required('port', default=1234): cv.port
+    vol.Required('port', default=1234): cv.port
 })
 
 
@@ -67,11 +69,12 @@ class ali_ip_relay(SwitchEntity):
         """Initialize an AwesomeLight."""
         self._ip = ip
         self._port = port
-        self._port = port
         self._sn = sn
         self._num = num
-        self._name = sn + '_' + str(num - 1)
+        self._id = sn + '_' + str(num)
+        self._name = 'ali_ip_relay_' + sn + '_' + str(num)
         self._state = True if state == '1' else False
+        hass.states.set(DOMAIN + '.' + self._id + '.test', self._sn)
 
     @ property
     def name(self) -> str:
@@ -102,4 +105,5 @@ class ali_ip_relay(SwitchEntity):
         """Fetch new state data for this light.
         This is the only method that should fetch new data for Home Assistant.
         """
+
         pass
