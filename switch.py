@@ -1,0 +1,102 @@
+"""Platform for switch integration."""
+from __future__ import annotations
+
+import logging
+import socket
+import json
+import voluptuous as vol
+
+# Import the device class from the component that you want to support
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components.light import (PLATFORM_SCHEMA)
+from homeassistant.const import CONF_IP, CONF_PORT
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+
+_LOGGER = logging.getLogger(__name__)
+
+# Validation of the user's configuration
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_IP): cv.string,
+   	vol.Required(CONF_PORT, default=1234): cv.integer
+})
+
+
+def setup_platform(
+    hass: HomeAssistant,
+    config: ConfigType,
+    add_entities: AddEntitiesCallback,
+    discovery_info: DiscoveryInfoType | None = None
+) -> None:
+    """Set up the Awesome Light platform."""
+    # Assign configuration variables.
+    # The configuration check takes care they are present.
+    ip = config[CONF_IP]
+    port = config[CONF_PORT]
+    # Setup connection with devices/cloud
+    sock = socket.socket()
+    sock.connect((str(ip), port))
+    sock.send('state=?'.encode())
+    data = sock.recv(1024)
+    sock.close()
+    if not data:
+        _LOGGER.error("Could not connect to AliIPRelay hub")
+        return
+    data = data.decode()
+    if not data:
+        _LOGGER.error("Could not connect to AliIPRelay hub")
+        return
+    data = json.loads(data)
+    if not data:
+        _LOGGER.error("Could not connect to AliIPRelay hub")
+        return
+    if data['cmd'] != 'state':
+        _LOGGER.error("Could not connect to AliIPRelay hub")
+        return
+
+    sn = data['sn']
+    runtime = data['runtime']
+    # Add devices
+    add_entities(AliIPRelay(ip, port, sn, i + 1,
+                 data['output'][i]) for i in range(0, len(data['output'])))
+
+
+class AliIPRelay(SwitchEntity):
+
+    def __init__(self, ip, port, sn, num, state) -> None:
+        """Initialize an AwesomeLight."""
+        self._ip = ip
+        self._port = port
+        self._port = port
+        self._sn = sn
+        self._num = num
+        self._name = sn + '_' + str(num - 1)
+        self._state = True if state == '1' else False
+
+    @ property
+    def name(self) -> str:
+        """Return the display name of this light."""
+        return self._name
+
+    @ property
+    def is_on(self) -> bool | None:
+        """Return true if light is on."""
+        return self._state
+
+    def turn_on(self, **kwargs: Any) -> None:
+        """Instruct the light to turn on.
+        You can skip the brightness part if your light does not support
+        brightness control.
+        """
+        pass
+
+    def turn_off(self, **kwargs: Any) -> None:
+        """Instruct the light to turn off."""
+        pass
+
+    def update(self) -> None:
+        """Fetch new state data for this light.
+        This is the only method that should fetch new data for Home Assistant.
+        """
+        pass
