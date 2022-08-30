@@ -9,7 +9,6 @@ import voluptuous as vol
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.light import (PLATFORM_SCHEMA)
-from homeassistant.const import CONF_IP, CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -18,8 +17,8 @@ _LOGGER = logging.getLogger(__name__)
 
 # Validation of the user's configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_IP): cv.string,
-   	vol.Required(CONF_PORT, default=1234): cv.integer
+    vol.Required('ip'): cv.string,
+   	vol.Required('port', default=1234): cv.port
 })
 
 
@@ -32,8 +31,8 @@ def setup_platform(
     """Set up the Awesome Light platform."""
     # Assign configuration variables.
     # The configuration check takes care they are present.
-    ip = config[CONF_IP]
-    port = config[CONF_PORT]
+    ip = config['ip']
+    port = config['port']
     # Setup connection with devices/cloud
     sock = socket.socket()
     sock.connect((str(ip), port))
