@@ -8,7 +8,7 @@ import voluptuous as vol
 
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.light import (PLATFORM_SCHEMA)
+from homeassistant.components.light import (PLATFORM_SCHEMA, SwitchEntity)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -92,6 +92,10 @@ class AliIPRelay(SwitchEntity):
 
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
+        pass
+
+    def toggle(self, **kwargs):
+        """Toggle the entity."""
         pass
 
     def update(self) -> None:
