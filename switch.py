@@ -71,7 +71,7 @@ class ali_ip_relay(SwitchEntity):
         self._port = port
         self._sn = sn
         self._num = num
-        # self._id = sn + '_' + str(num)
+        self._id = sn + '_' + str(num)
         self._name = 'ali_ip_relay_' + sn + '_' + str(num)
         self._state = True if state == '1' else False
         # hass.states.set(DOMAIN + '.' + self._id + '.test', self._sn)
