@@ -2,10 +2,10 @@
 
 This integration shows how you would go ahead and integrate a physical light into Home Assistant.
 
-If you use this integration as a template, make sure you tweak the following places:
+![IP-8.jpg](IP-8.jpg)
+![IP-8-2.jpg](IP-8-2.jpg)
 
- - `manifest.json`: update the requirements to point at your Python library
- - `light.py`: update the code to interact with your library
+[Buy in Aliexpress](https://aliexpress.ru/item/32914881766.html)
 
 ### Installation
 
