@@ -5,7 +5,7 @@ This integration shows how you would go ahead and integrate a physical light int
 ![IP-8.jpg](IP-8.jpg)
 ![IP-8-2.jpg](IP-8-2.jpg)
 
-[Buy in Aliexpress](https://aliexpress.ru/item/32914881766.html)
+[Buy in Aliexpress](https://aliexpress.com/item/32914881766.html)
 
 ### Installation
 
