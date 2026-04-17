@@ -8,7 +8,8 @@ import voluptuous as vol
 
 # Import the device class from the component that you want to support
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.light import (PLATFORM_SCHEMA, LightEntity)
+from typing import Any
+from homeassistant.components.light import PLATFORM_SCHEMA, LightEntity, ColorMode
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -64,6 +65,8 @@ def setup_platform(
 
 
 class ali_ip_relay(LightEntity):
+    _attr_supported_color_modes = {ColorMode.ONOFF}
+    _attr_color_mode = ColorMode.ONOFF
 
     def __init__(self, ip, port, sn, num, state, max_count) -> None:
         """Initialize an AwesomeLight."""
@@ -79,6 +82,12 @@ class ali_ip_relay(LightEntity):
         self._attr_device_info = sn
         self._attr_unique_id = self._unique_id
         # hass.states.set(DOMAIN + '.' + self._id + '.test', self._sn)
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, self._sn)},
+            "name": f"ali_ip_relay_{self._sn}",
+            "manufacturer": "Ali",
+            "model": "IP Relay",
+        }
 
     @property
     def name(self) -> str:
@@ -104,6 +113,7 @@ class ali_ip_relay(LightEntity):
         sock.connect((str(self._ip), self._port))
         sock.send(('setr=' + ''.join(switch)).encode())
         sock.close()
+        self._state = True
 
     def turn_off(self, **kwargs: Any) -> None:
         if self._num < 1 or self._num > self._max_count:
@@ -115,6 +125,7 @@ class ali_ip_relay(LightEntity):
         sock.connect((str(self._ip), self._port))
         sock.send(('setr=' + ''.join(switch)).encode())
         sock.close()
+        self._state = False
 
     def update(self) -> None:
         """Fetch new state data for this light.
